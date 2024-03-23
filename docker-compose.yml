@@ -1,7 +1,24 @@
-version: '3'
-
+version: '3.8'
 services:
-  app:
-    build: .
+  python-etl:
+    image: python:3.8-slim
     volumes:
-      - .:/app
+      - ./python-etl:/usr/src/etl
+    working_dir: /usr/src/etl
+    command: /bin/bash -c "pip install -r requirements.txt && python etl.py"
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - data-base
+  data-base:
+    image: postgres:12.16
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: melhorenvio
+      POSTGRES_USER: melhorenviouser
+      POSTGRES_PASSWORD: melhorenviopassword
+    ports:
+      - "5432:5432"
+volumes:
+  db: 
