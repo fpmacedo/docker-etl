@@ -1,7 +1,7 @@
-version: '3.8'
+version: '3.11'
 services:
   python-etl:
-    image: python:3.8-slim
+    image: python:3.11-slim
     volumes:
       - ./python-etl:/usr/src/etl
     working_dir: /usr/src/etl
@@ -9,16 +9,17 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
     depends_on:
-      - data-base
-  data-base:
+      - data-ware-house
+  data-ware-house:
     image: postgres:12.16
     volumes:
       - db:/var/lib/postgresql/data
     environment:
+      DATABASE_HOST: data-ware-house
       POSTGRES_DB: melhorenvio
       POSTGRES_USER: melhorenviouser
       POSTGRES_PASSWORD: melhorenviopassword
     ports:
       - "5432:5432"
 volumes:
-  db: 
+  db:
