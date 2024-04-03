@@ -5,21 +5,23 @@ services:
     volumes:
       - ./python-etl:/usr/src/etl
     working_dir: /usr/src/etl
-    command: /bin/bash -c "pip install -r requirements.txt && python etl.py"
+    command: /bin/bash -c "pip install -r requirements.txt && python create_tables.py && python etl.py"
     environment:
       - PYTHONUNBUFFERED=1
     depends_on:
-      - data-ware-house
-  data-ware-house:
+      - melhorenvio-db
+  melhorenvio-db:
     image: postgres:12.16
     volumes:
       - db:/var/lib/postgresql/data
     environment:
-      DATABASE_HOST: data-ware-house
+      #DATABASE_HOST: melhorenvio-host
       POSTGRES_DB: melhorenvio
       POSTGRES_USER: melhorenviouser
       POSTGRES_PASSWORD: melhorenviopassword
     ports:
       - "5432:5432"
+    expose:
+      - "5432"
 volumes:
   db:
