@@ -58,3 +58,16 @@ upsert_raw_table = """
                         SELECT Op, oid__id, createdAt, updatedAt, lastSyncTracker, array_trackingEvents
                         FROM raw_temp;
                   """
+
+json_threat = """
+                SELECT op, oid__id, createdat, updatedat, lastsynctracker,
+                       tracking_event->> 'to' as tracking_event_to,
+                       tracking_event->> 'from' as tracking_event_from,
+                       tracking_event->> 'status' as tracking_event_status,
+                       tracking_event->'createdAt'->'$date' as tracking_event_date,
+                       tracking_event->> 'description' as tracking_event_description,
+                       tracking_event->> 'trackerType' as tracking_event_type,
+                       tracking_event->> 'trackingCode' as tracking_event_code
+                       FROM (SELECT op, oid__id, createdat, updatedat, lastsynctracker, jsonb_array_elements(array_trackingevents) as tracking_event 
+                       FROM public.raw) as base;
+              """
